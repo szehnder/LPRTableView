@@ -2,3 +2,5 @@
 *.xcworkspace
 *.xcuserstate
 *xcuserdata*
+.ruby-version
+.ruby-gemset
