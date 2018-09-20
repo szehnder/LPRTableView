@@ -51,15 +51,15 @@ open class LPRTableView: UITableView {
 			longPressGestureRecognizer.isEnabled = newValue
 		}
 	}
+    
+    public convenience init() {
+        self.init()
+    }
 	
-	public convenience init()  {
-		self.init(frame: CGRect.zero)
-	}
-	
-	public override init(frame: CGRect, style: UITableViewStyle) {
-		super.init(frame: frame, style: style)
-		initialize()
-	}
+//    public override init(frame: CGRect, style: UITableView.Style) {
+//        super.init(frame: frame, style: style)
+//        initialize()
+//    }
 	
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -84,7 +84,7 @@ extension LPRTableView {
 		longPressGestureRecognizer.isEnabled = true
 	}
 	
-	internal func _longPress(_ gesture: UILongPressGestureRecognizer) {
+    @objc internal func _longPress(_ gesture: UILongPressGestureRecognizer) {
 		
 		let location = gesture.location(in: self)
 		let indexPath = indexPathForRow(at: location)
@@ -98,9 +98,9 @@ extension LPRTableView {
 		// Get out of here if the long press was not on a valid row or our table is empty
 		// or the dataSource tableView:canMoveRowAtIndexPath: doesn't allow moving the row.
 		if (rows == 0) ||
-			((gesture.state == UIGestureRecognizerState.began) && (indexPath == nil)) ||
-			((gesture.state == UIGestureRecognizerState.ended) && (currentLocationIndexPath == nil)) ||
-			((gesture.state == UIGestureRecognizerState.began) && !canMoveRowAt(indexPath: indexPath!)) {
+            ((gesture.state == UIGestureRecognizer.State.began) && (indexPath == nil)) ||
+            ((gesture.state == UIGestureRecognizer.State.ended) && (currentLocationIndexPath == nil)) ||
+            ((gesture.state == UIGestureRecognizer.State.began) && !canMoveRowAt(indexPath: indexPath!)) {
 				cancelGesture()
 				return
 		}
@@ -158,7 +158,7 @@ extension LPRTableView {
 					
 					// Enable scrolling for cell.
 					scrollDisplayLink = CADisplayLink(target: self, selector: #selector(LPRTableView._scrollTableWithCell(_:)))
-					scrollDisplayLink?.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+                    scrollDisplayLink?.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
 				}
 			}
 		}
@@ -267,7 +267,7 @@ extension LPRTableView {
 		}
 	}
 	
-	internal func _scrollTableWithCell(_ sender: CADisplayLink) {
+    @objc internal func _scrollTableWithCell(_ sender: CADisplayLink) {
 		if let gesture = longPressGestureRecognizer {
 			
 			let location = gesture.location(in: self)
@@ -303,14 +303,14 @@ extension LPRTableView {
 open class LPRTableViewController: UITableViewController, LPRTableViewDelegate {
 	
 	/** Returns the long press to reorder table view managed by the controller object. */
-	open var lprTableView: LPRTableView! { return tableView as! LPRTableView }
+    open var lprTableView: LPRTableView! { return tableView as? LPRTableView }
 	
 	public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 		initialize()
 	}
 	
-	public override init(style: UITableViewStyle) {
+    public override init(style: UITableView.Style) {
 		super.init(style: style)
 		initialize()
 	}
